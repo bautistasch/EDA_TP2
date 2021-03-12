@@ -1,0 +1,4 @@
+﻿  allegroInterface.c
+C:\Users\sch_b\source\VS REPOS\myFirstProyect\myFirstProyect\allegroInterface.c(88,25): warning C4047: 'function': 'char **' differs in levels of indirection from 'int'
+C:\Users\sch_b\source\VS REPOS\myFirstProyect\myFirstProyect\allegroInterface.c(88,21): warning C4024: 'parseCmdLine': different types for formal and actual parameter 2
+  myFirstProyect.vcxproj -> C:\Users\sch_b\source\VS REPOS\myFirstProyect\Debug\myFirstProyect.exe
