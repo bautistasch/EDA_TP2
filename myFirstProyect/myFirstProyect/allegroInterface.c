@@ -13,13 +13,10 @@
 #define D_WIDTH_GRAPHIC  1200
 #define D_HEIGHT_GRAPHIC 1000
 
-
 #define FPS 100
 
-#define TILE_SIZE 10          // ESTO DEBERIA SER CALCULADO POR EL PROGRAMA
-
-#define D_MAX_WIDTH 1600
-#define D_MAX_HEIGHT 1200
+#define D_MAX_WIDTH 1000
+#define D_MAX_HEIGHT 700
 
 #define MAXSIM 1000
 #define PI 3.14159265
@@ -60,6 +57,7 @@ typedef struct
 	int width;
 	int height;
 	int robots;
+	int mode;
 }dataInput;
 
 typedef struct
@@ -96,9 +94,14 @@ void drawGraphic(int n, int* ticks);
 
 int main(int argc, char* argv [])
 {
-	dataInput myDataInput;                                          // VER COMO INGRESAR COMANDO POR VS
+	dataInput myDataInput = {0,0,0,0};		// VER COMO INGRESAR COMANDO POR VS
 	parseCmdLine(argc, argc, parseCallback, &myDataInput );        // No lo puedo probar
-	
+	if (myDataInput.width == 0 || myDataInput.height == 0 || myDataInput.robots == 0 || myDataInput.mode == 0)
+	{
+		printf("ERROR: Missing parameters.\n");
+		return 1;
+	}
+
 	int dispW, dispH;
 	adaptDispSize(50, 50, &dispW, &dispH);     // <----- esta funcion se deberia rehacer
 
@@ -169,22 +172,29 @@ int main(int argc, char* argv [])
 int parseCallback(char* key, char* value, void* userData)
 {
 	dataInput* myData = userData;
-	if (key == NULL)
+	if ((key == NULL) || (value == NULL))
+	{
 		return 0;
-	if (key == "-w")
+	}
+	if (*key == "w")
 	{
 		myData->width = atof(value);
 	}
-	else if (key == "-h")
+	else if (*key == "h")
 	{
 		myData->height = atof(value);
 	}
-	else if (key == "r")
+	else if (*key == "r")
 	{
 		myData->robots = atof(value);
 	}
+	else if (*key == "m")
+	{
+		myData->mode = atof(value);
+	}
 	else
 	{
+		printf("Invalid Option entered.");
 		return 0;
 	}
 	return 1;
@@ -457,15 +467,16 @@ void drawGraphic(int n, int * ticks) //  n = 1 asociado con ticks[n-1]  f(n-1) =
 
 int adaptDispSize(int width, int height, int* dispW, int* dispH)
 {
-	if ((width * TILE_SIZE <= D_MAX_WIDTH) && (height * TILE_SIZE <= D_MAX_HEIGHT))
+	if ((width <= 100) && (height <= 70))
 	{
-		*dispW = width * TILE_SIZE;
-		*dispH = height * TILE_SIZE;
+		int tilesize = min((D_MAX_WIDTH / width), (D_MAX_HEIGHT / height));
+		*dispW = width * tilesize;
+		*dispH = height * tilesize;
 		return 1;
 	}
 	else
 	{
-		printf("Change TILE_SIZE, too large");
+		printf("Exceeded valid number of tiles for width or height.\n");
 	}
 	return 0;
 }
